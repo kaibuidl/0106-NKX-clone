@@ -519,7 +519,7 @@
         };
 
         // ============ STEP CONTROLLER COMPONENT ============
-        function StepController({ currentStep, onStepClick, onPrev, onNext, theme, setTheme, themeMode, setThemeMode }) {
+        function StepController({ currentStep, onStepClick, onPrev, onNext, theme, setTheme, themeMode, setThemeMode, viewMode, setViewMode }) {
             const steps = [
                 { id: 1, label: 'Step 1: Select Pair' },
                 { id: 2, label: 'Step 2: Enter Address' },
@@ -534,6 +534,21 @@
                             <p className="font-semibold leading-[20px] not-italic text-[#09090b] text-[14px] text-nowrap">
                                 Step Controller
                             </p>
+                            <button
+                                onClick={() => setViewMode(viewMode === 'web' ? 'mobile' : 'web')}
+                                className="w-[20px] h-[20px] flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
+                                title={viewMode === 'web' ? 'Switch to Mobile View' : 'Switch to Web View'}
+                            >
+                                {viewMode === 'web' ? (
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                ) : (
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                )}
+                            </button>
                         </div>
                     </div>
 
@@ -638,11 +653,41 @@
             );
         }
 
+        // ============ DEVICE SIMULATOR COMPONENT ============
+        function DeviceSimulator({ children }) {
+            return (
+                <div className="min-h-screen bg-gray-100 flex items-center justify-center p-8 transition-all duration-300 fixed inset-0 z-40 overflow-y-auto">
+                    <div className="relative bg-black rounded-[50px] p-3 shadow-2xl shrink-0">
+                        {/* Notch */}
+                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[170px] h-[30px] bg-black rounded-b-[20px] z-50"></div>
+                        
+                        {/* Screen Container */}
+                        <div 
+                            className="relative bg-white rounded-[42px] overflow-hidden"
+                            style={{ 
+                                width: '390px', 
+                                height: '844px',
+                            }}
+                        >
+                            {/* Scrollable Content */}
+                            <div className="w-full h-full overflow-y-auto overflow-x-hidden hide-scrollbar">
+                                {children}
+                            </div>
+                        </div>
+
+                        {/* Home Indicator */}
+                        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[134px] h-[5px] bg-white rounded-full z-50"></div>
+                    </div>
+                </div>
+            );
+        }
+
         // ============ MAIN EXCHANGE COMPONENT ============
         function ExchangeApp() {
             // State management
             const [theme, setTheme] = useState('buidlpad');
             const [themeMode, setThemeMode] = useState('light');
+            const [viewMode, setViewMode] = useState('web'); // 'web' or 'mobile'
             const currentTheme = THEMES[theme][themeMode];
 
             const [step, setStep] = useState(1);
@@ -1431,6 +1476,8 @@
                             setTheme={setTheme}
                             themeMode={themeMode}
                             setThemeMode={setThemeMode}
+                            viewMode={viewMode}
+                            setViewMode={setViewMode}
                         />
                     </div>
                 </div>
